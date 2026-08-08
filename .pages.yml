@@ -4,7 +4,7 @@ media:
 
 content:
   - name: posts
-    label: 博客文章
+    label: 今日所念
     type: collection
     path: _posts
     format: raw
