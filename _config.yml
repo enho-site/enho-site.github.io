@@ -1,2 +1,22 @@
 title: ENHO
 description: 这是一个安安静静记录自我成长、碎碎念、读书、学习和旅行的小角落。
+
+# 时区需要和 Pages CMS「发布时间」字段写入的本地时间保持一致，
+# 不然可能出现文章因为时区换算被 Jekyll 当成"未来文章"而不显示。
+# 如果你不在日本，请改成对应时区，例如 Asia/Shanghai。
+timezone: Asia/Tokyo
+
+# 给 _posts 下所有文章统一套用 post 布局。
+# Pages CMS 生成的 frontmatter 目前没有 layout 字段，
+# 少了这段，文章详情页会因为找不到布局，显示成没有样式的纯文本。
+defaults:
+  - scope:
+      path: ""
+      type: "posts"
+    values:
+      layout: "post"
+
+# 避免 README 和 CMS 配置文件被 Jekyll 当成普通页面构建出来。
+exclude:
+  - README.md
+  - .pages.yml
