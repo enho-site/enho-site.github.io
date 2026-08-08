@@ -7,18 +7,32 @@ content:
     label: 今日所念
     type: collection
     path: _posts
-    slug: "{year}-{month}-{day}-{title}"
+    # 关键修复：原来的 `slug` 不是有效字段，Pages CMS 现在用 `filename`
+    # 控制生成文件名，且模板必须带扩展名，否则文章不会被 Jekyll 识别。
+    filename: "{year}-{month}-{day}-{title}.md"
+    view:
+      fields: [title, date]
+      primary: title
+      sort: [date, title]
+      default:
+        sort: date
+        order: desc
     fields:
       - name: title
         label: 文章标题
         type: string
         required: true
-        isTitle: true
       - name: date
         label: 发布时间
-        type: datetime
-        default: CURRENT_DATETIME
+        type: date
         required: true
+        options:
+          # 关键修复：原来的 `type: datetime` 不是有效类型，
+          # 时间选择器要通过 date 类型的 time 选项开启。
+          time: true
+          format: "yyyy-MM-dd HH:mm:ss"
       - name: body
         label: 正文内容
         type: rich-text
+        options:
+          format: markdown
