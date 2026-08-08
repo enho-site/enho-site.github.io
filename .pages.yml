@@ -1,0 +1,24 @@
+media:
+  input: assets/images
+  output: /assets/images
+
+content:
+  - name: posts
+    label: 博客文章
+    type: collection
+    path: _posts
+    format: raw
+    slug: "{year}-{month}-{day}-{slug}"
+    fields:
+      - name: title
+        label: 文章标题
+        type: string
+        required: true
+      - name: date
+        label: 发布时间
+        type: datetime
+        default: CURRENT_DATETIME
+        required: true
+      - name: body
+        label: 正文内容
+        type: rich-text
