@@ -3,113 +3,108 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{{ site.title }}</title>
+<title>{% if page.title %}{{ page.title }} · {% endif %}{{ site.title }}</title>
 <meta name="description" content="{{ site.description }}">
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Noto+Sans+SC:wght@300;400;500&family=Noto+Serif+SC:wght@500;600&display=swap" rel="stylesheet">
-
 <style>
   :root{
-    --bg:        #f4f2ec;
-    --tint:      #e7ece7;
-    --ink:       #333f3e;
-    --ink-soft:  #6f7b77;
-    --accent:    #5b8a82;
-    --accent-deep:#3f6b62;
-    --line:      #dcdccf;
-    --sun:       #e0a458;
-    --serif:     "Fraunces","Noto Serif SC",Georgia,serif;
-    --sans:      "Noto Sans SC",system-ui,-apple-system,sans-serif;
+    --paper: #F0EEE3;
+    --paper-deep: #E3E0D2;
+    --ink: #292722;
+    --ink-soft: #726E62;
+    --pine: #3F5D54;
+    --plum: #7A5568;
+    --measure: 640px;
   }
-
-  *{ box-sizing:border-box; margin:0; padding:0; }
-  html{ scroll-behavior:smooth; }
+  *{box-sizing:border-box;}
   body{
-    background:var(--bg);
+    margin:0;
+    background:var(--paper);
     color:var(--ink);
-    font-family:var(--sans);
-    font-weight:400;
-    line-height:1.85;
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",sans-serif;
+    line-height:1.75;
     -webkit-font-smoothing:antialiased;
-    background-image:radial-gradient(120% 60% at 50% -10%, #eef2ec 0%, var(--bg) 55%);
-    background-attachment:fixed;
+  }
+  a{color:var(--pine); text-decoration:none;}
+  a:hover{text-decoration:underline;}
+  a:focus-visible{outline:2px solid var(--plum); outline-offset:3px;}
+
+  header.site{
+    padding:64px 24px 32px;
+    max-width:var(--measure);
+    margin:0 auto;
+    border-bottom:1px solid var(--paper-deep);
+  }
+  header.site .name{
+    font-family:Georgia,"Songti SC","STSong","Noto Serif SC",serif;
+    font-size:28px;
+    font-weight:600;
+    margin:0;
+  }
+  header.site .name a{color:var(--ink);}
+  header.site .name a:hover{text-decoration:none; color:var(--pine);}
+  header.site .tagline{margin:10px 0 0; color:var(--ink-soft); font-size:15px;}
+
+  main{max-width:var(--measure); margin:0 auto; padding:40px 24px 80px;}
+
+  footer.site{
+    max-width:var(--measure); margin:0 auto;
+    padding:32px 24px 64px;
+    color:var(--ink-soft); font-size:13px;
   }
 
-  .wrap{ max-width:660px; margin:0 auto; padding:0 26px; }
+  /* 首页文章列表：左侧一条竖线像笔记本的书脊，也呼应"成长"的时间线 */
+  .post-list{position:relative; padding-left:20px; border-left:1px solid var(--paper-deep);}
+  .entry{position:relative; padding-bottom:44px;}
+  .entry:last-child{padding-bottom:0;}
+  .entry-dot{position:absolute; left:-25px; top:6px; width:9px; height:9px; border-radius:50%; background:var(--pine);}
+  .entry-date{display:block; font-size:13px; color:var(--ink-soft); letter-spacing:0.03em; margin-bottom:6px;}
+  .entry-title{margin:0 0 8px; font-family:Georgia,"Songti SC","STSong","Noto Serif SC",serif; font-size:22px; font-weight:600; line-height:1.4;}
+  .entry-title a{color:var(--ink);}
+  .entry-title a:hover{color:var(--pine);}
+  .entry-excerpt{margin:0; color:var(--ink-soft); font-size:15px;}
+  .empty{color:var(--ink-soft);}
 
-  header{ padding:96px 0 20px; text-align:center; }
-  .sprout{ width:46px; height:auto; display:block; margin:0 auto 22px; }
-  .mark{ font-family:var(--serif); font-weight:600; font-size:clamp(52px,13vw,78px); letter-spacing:.06em; line-height:1; color:var(--ink); text-decoration: none;}
-  .tagline{ font-family:var(--serif); font-weight:500; font-size:clamp(17px,4.4vw,20px); color:var(--accent-deep); margin-top:18px; letter-spacing:.02em; }
-  .intro{ color:var(--ink-soft); font-size:16px; margin:26px auto 0; max-width:520px; }
-
-  /* 首页独有样式 */
-  .themes{ padding:64px 0 8px; }
-  .eyebrow{ font-family:var(--serif); font-weight:500; font-size:15px; color:var(--accent); letter-spacing:.14em; text-transform:uppercase; display:flex; align-items:center; gap:14px; margin-bottom:30px; }
-  .eyebrow::after{ content:""; flex:1; height:1px; background:var(--line); }
-  .theme{ display:flex; gap:18px; padding:20px 0; border-bottom:1px solid var(--line); }
-  .theme:last-child{ border-bottom:none; }
-  .dot{ flex:none; width:9px; height:9px; margin-top:12px; border-radius:50%; border:1.5px solid var(--accent); }
-  .theme h3{ font-family:var(--serif); font-weight:500; font-size:19px; color:var(--ink); margin-bottom:3px; }
-  .theme p{ color:var(--ink-soft); font-size:15px; line-height:1.7; }
-  
-  .recent{ padding:60px 0 0; }
-  .note{ display:block; text-decoration:none; color:inherit; padding:22px; margin-bottom:14px; background:var(--tint); border-radius:16px; transition:transform .25s ease, box-shadow .25s ease; }
-  .note:hover, .note:focus-visible{ transform:translateY(-3px); box-shadow:0 10px 26px -14px rgba(63,107,98,.45); outline:none; }
-  .note .date{ font-family:var(--serif); font-size:13px; color:var(--accent); letter-spacing:.05em; }
-  .note h3{ font-family:var(--serif); font-weight:500; font-size:18px; margin:4px 0 6px; color:var(--ink); }
-  .note p{ color:var(--ink-soft); font-size:15px; line-height:1.7; }
-
-  footer{ text-align:center; padding:70px 0 60px; color:var(--ink-soft); font-size:14px; }
-  footer .line{ width:34px; height:1px; background:var(--line); margin:0 auto 26px; }
-  footer .copy{ font-family:var(--serif); letter-spacing:.08em; margin-top:8px; color:var(--accent); }
-
-  /* Markdown 文章详情页补充样式 */
-  .post-article { padding: 40px 0; }
-  .post-header { margin-bottom: 40px; text-align: center; }
-  .post-header h1 { font-family: var(--serif); font-weight: 600; font-size: 28px; color: var(--ink); margin-bottom: 12px; }
-  .post-header .date { font-family: var(--serif); font-size: 14px; color: var(--accent); letter-spacing: .05em; }
-  .post-content h2, .post-content h3 { font-family: var(--serif); color: var(--ink); margin: 2em 0 1em; font-weight: 500; }
-  .post-content p { margin-bottom: 1.5em; }
-  .post-content img { max-width: 100%; height: auto; border-radius: 12px; margin: 1em 0; }
-  .post-content a { color: var(--accent); text-decoration: none; border-bottom: 1px dashed var(--accent); }
-  
-  @media (prefers-reduced-motion: no-preference){
-    [data-in]{ opacity:0; transform:translateY(14px); animation:rise .8s cubic-bezier(.2,.7,.3,1) forwards; }
-    [data-in="2"]{ animation-delay:.12s; }
-    [data-in="3"]{ animation-delay:.24s; }
-    [data-in="4"]{ animation-delay:.36s; }
-    .sprout path{ stroke-dasharray:120; stroke-dashoffset:120; animation:draw 1.6s ease forwards .1s; }
+  /* 文章详情页 */
+  .post-header{margin-bottom:32px;}
+  .post-header .back{font-size:13px; color:var(--ink-soft);}
+  .post-title{
+    font-family:Georgia,"Songti SC","STSong","Noto Serif SC",serif;
+    font-size:32px; line-height:1.35; margin:14px 0 10px;
   }
-  @keyframes rise{ to{ opacity:1; transform:none; } }
-  @keyframes draw{ to{ stroke-dashoffset:0; } }
+  .post-meta{font-size:13px; color:var(--ink-soft);}
+  .post-content{font-size:16.5px;}
+  .post-content p{margin:0 0 22px;}
+  .post-content img{max-width:100%; border-radius:4px;}
+  .post-content h2,.post-content h3{
+    font-family:Georgia,"Songti SC","STSong","Noto Serif SC",serif;
+    margin:40px 0 14px;
+  }
+  .post-content blockquote{
+    margin:24px 0; padding:4px 20px;
+    border-left:3px solid var(--plum);
+    color:var(--ink-soft);
+  }
+  .post-content a{text-decoration:underline;}
+
+  @media (max-width:480px){
+    header.site{padding:40px 20px 24px;}
+    .post-title{font-size:26px;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none !important;}
+  }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header>
-    <a href="{{ '/' | relative_url }}">
-      <svg class="sprout" viewBox="0 0 48 60" fill="none" data-in="1">
-        <path d="M24 58 C24 44 23.4 32 24 21" stroke="#5b8a82" stroke-width="2" stroke-linecap="round"/>
-        <path d="M24 35 C12 37 6 31 6.5 20.5 C17 21 23.4 27 24 35 Z" stroke="#5b8a82" stroke-width="1.8" stroke-linejoin="round" fill="#5b8a82" fill-opacity=".12"/>
-        <path d="M24 29 C36 31 42.5 24.5 42 14 C31.5 14.5 25 21 24 29 Z" stroke="#5b8a82" stroke-width="1.8" stroke-linejoin="round" fill="#5b8a82" fill-opacity=".12"/>
-      </svg>
-    </a>
-    <a href="{{ '/' | relative_url }}" class="mark" data-in="1">ENHO</a>
-    <div class="tagline" data-in="2">好好生活，慢慢生长</div>
-    <p class="intro" data-in="3">一个属于enho的小角落。碎碎念，记记读过的书、学到的东西、走过的路...把每天认真过好。</p>
+  <header class="site">
+    <p class="name"><a href="{{ '/' | relative_url }}">{{ site.title }}</a></p>
+    <p class="tagline">{{ site.description }}</p>
   </header>
-
-  <!-- 这里的内容会根据当前是首页还是文章页自动替换 -->
-  {{ content }}
-
-  <footer>
-    <div class="line"></div>
-    谢谢你来。
-    <div class="copy">© 2026 ENHO</div>
+  <main>
+    {{ content }}
+  </main>
+  <footer class="site">
+    <p>© {{ site.time | date: "%Y" }} {{ site.title }}</p>
   </footer>
-</div>
 </body>
 </html>
