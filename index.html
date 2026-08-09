@@ -1,28 +1,127 @@
 ---
 layout: default
 ---
-<p class="intro">
-  这里是我用来安放日常的小角落。写写碎碎念，记记读过的书、学到的东西、走过的路——
-  不追求什么大道理，只想把每天认真过好，然后回头看看自己走了多远。
-</p>
+<style>
+  .landing{ display:grid; grid-template-columns:1fr 1.1fr; gap:22px; margin:36px 0 8px; align-items:start; }
+  @media (max-width:620px){ .landing{ grid-template-columns:1fr; } }
 
-<section class="themes">
-  <div class="eyebrow">这里写些什么</div>
-  <div class="theme"><span class="dot"></span><div><h3>碎碎念</h3><p>一些当下的心情和胡思乱想，不修边幅地记下来。</p></div></div>
-  <div class="theme"><span class="dot"></span><div><h3>读书</h3><p>读过的、正在读的，还有那些让我停下来想很久的句子。</p></div></div>
-  <div class="theme"><span class="dot"></span><div><h3>学习</h3><p>在学的东西、踩过的坑，和慢慢积累起来的一点点长进。</p></div></div>
-  <div class="theme"><span class="dot"></span><div><h3>旅行</h3><p>去过的地方，和路上那些让人心里忽然一亮的瞬间。</p></div></div>
+  .cats{ display:flex; flex-direction:column; gap:14px; }
+  .cat-card{
+    text-align:left; font-family:inherit; cursor:pointer; width:100%;
+    background:var(--tint); border:1px solid transparent; border-radius:16px;
+    padding:18px 20px; transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease, background .2s ease;
+  }
+  .cat-card:hover{ transform:translateY(-2px); box-shadow:0 8px 22px -14px rgba(63,107,98,.4); }
+  .cat-card:focus-visible{ outline:none; border-color:var(--accent); }
+  .cat-card.active{ border-color:var(--accent); background:#eef3ef; }
+  .cat-card .cname{ font-family:var(--serif); font-weight:500; font-size:18px; color:var(--ink); display:block; }
+  .cat-card .csub{ font-size:13px; color:var(--ink-soft); margin-top:4px; display:block; }
+
+  .cal-panel{ background:var(--tint); border-radius:16px; padding:20px 20px 22px; }
+  .cal-title{ font-family:var(--serif); font-size:16px; color:var(--accent-deep); text-align:center; margin-bottom:14px; letter-spacing:.04em; }
+  .cal-grid{ display:grid; grid-template-columns:repeat(7,1fr); gap:6px; }
+  .cal-wk{ font-size:11px; color:var(--ink-soft); text-align:center; padding-bottom:4px; }
+  .cal-day{ font-size:13px; color:var(--ink); text-align:center; padding:7px 0; border-radius:9px; position:relative; }
+  .cal-day.today{ background:var(--accent); color:#fff; }
+  .cal-day.has-post::after{ content:""; position:absolute; bottom:3px; left:50%; transform:translateX(-50%); width:4px; height:4px; border-radius:50%; background:var(--accent); }
+  .cal-day.today.has-post::after{ background:#fff; }
+
+  .feed{ margin-top:26px; }
+  .feed .eyebrow{ margin-bottom:20px; }
+  .note-top{ display:flex; align-items:center; gap:12px; margin-bottom:4px; }
+  .tag{ font-size:12px; color:var(--accent-deep); background:rgba(91,138,130,.12); padding:2px 11px; border-radius:100px; }
+</style>
+
+<section class="landing">
+  <div class="cats">
+    <button class="cat-card active" data-cat="all">
+      <span class="cname">今日所念</span>
+      <span class="csub">一天一句，把心情随手记下</span>
+    </button>
+    <button class="cat-card" data-cat="学习">
+      <span class="cname">学习</span>
+      <span class="csub">三分钟的热情也是热情～</span>
+    </button>
+    <button class="cat-card" data-cat="阅读＆观影">
+      <span class="cname">阅读＆观影</span>
+      <span class="csub">看过的书和电影，还有留下的句子</span>
+    </button>
+    <button class="cat-card" data-cat="旅行">
+      <span class="cname">旅行</span>
+      <span class="csub">吃吃吃吃喝喝看看看～</span>
+    </button>
+  </div>
+
+  <div class="cal-panel">
+    <div id="calendar"></div>
+  </div>
 </section>
 
-<section class="recent">
-  <div class="eyebrow">最近写的</div>
-  {% for post in site.posts %}
-    <a class="note" href="{{ post.url | relative_url }}">
-      <span class="date">{{ post.date | date: "%Y.%m.%d" }}</span>
-      <h3>{{ post.title }}</h3>
-      {% if post.excerpt %}<p>{{ post.excerpt | strip_html | truncate: 80 }}</p>{% endif %}
-    </a>
-  {% else %}
+<section class="feed" id="feed">
+  <div class="eyebrow"><span id="feed-title">全部</span></div>
+
+  <div class="posts">
+    {% for post in site.posts %}
+      <a class="note" data-cat="{{ post.category }}" href="{{ post.url | relative_url }}">
+        <div class="note-top">
+          <span class="date">{{ post.date | date: "%Y.%m.%d" }}</span>
+          {% if post.category %}<span class="tag">{{ post.category }}</span>{% endif %}
+        </div>
+        <h3>{{ post.title }}</h3>
+        {% if post.excerpt %}<p>{{ post.excerpt | strip_html | truncate: 80 }}</p>{% endif %}
+      </a>
+    {% endfor %}
+  </div>
+
+  {% if site.posts.size == 0 %}
     <p class="empty">这里还没有文章，第一篇正在路上。</p>
-  {% endfor %}
+  {% endif %}
+  <p class="empty" id="empty" style="display:none;">这个分类还没有内容，慢慢来。</p>
 </section>
+
+<script>
+  // —— 当月日历（高亮今天，标出发过文章的日子）——
+  (function(){
+    var postDates = [{% for post in site.posts %}"{{ post.date | date: '%Y-%-m-%-d' }}"{% unless forloop.last %},{% endunless %}{% endfor %}];
+    var now = new Date(), y = now.getFullYear(), m = now.getMonth(), today = now.getDate();
+    var months = ['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月'];
+    var firstDay = new Date(y, m, 1).getDay();
+    var days = new Date(y, m + 1, 0).getDate();
+    var html = '<div class="cal-title">' + y + ' · ' + months[m] + '</div><div class="cal-grid">';
+    ['日','一','二','三','四','五','六'].forEach(function(w){ html += '<span class="cal-wk">' + w + '</span>'; });
+    for (var i = 0; i < firstDay; i++) html += '<span></span>';
+    for (var d = 1; d <= days; d++){
+      var cls = 'cal-day';
+      if (d === today) cls += ' today';
+      if (postDates.indexOf(y + '-' + (m + 1) + '-' + d) >= 0) cls += ' has-post';
+      html += '<span class="' + cls + '">' + d + '</span>';
+    }
+    document.getElementById('calendar').innerHTML = html + '</div>';
+  })();
+
+  // —— 分类卡片筛选 ——
+  (function(){
+    var cards = document.querySelectorAll('.cat-card');
+    var notes = document.querySelectorAll('.note');
+    var title = document.getElementById('feed-title');
+    var empty = document.getElementById('empty');
+    function filter(cat){
+      cards.forEach(function(c){ c.classList.toggle('active', c.dataset.cat === cat); });
+      var shown = 0;
+      notes.forEach(function(n){
+        var match = (cat === 'all' || n.dataset.cat === cat);
+        n.style.display = match ? '' : 'none';
+        if (match) shown++;
+      });
+      title.textContent = (cat === 'all') ? '全部' : cat;
+      empty.style.display = (shown === 0) ? 'block' : 'none';
+    }
+    cards.forEach(function(card){
+      card.addEventListener('click', function(){
+        var cat = card.classList.contains('active') && card.dataset.cat !== 'all' ? 'all' : card.dataset.cat;
+        filter(cat);
+        document.getElementById('feed').scrollIntoView({ behavior: 'smooth' });
+      });
+    });
+  })();
+</script>
