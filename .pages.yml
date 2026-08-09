@@ -1,6 +1,6 @@
 media:
-  input: assets/images      # 图片在仓库里实际存放的文件夹
-  output: /assets/images    # 文章里引用图片时用的网址路径（带开头的斜杠）
+  input: assets/images
+  output: /assets/images
 
 content:
   - name: posts
