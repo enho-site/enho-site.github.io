@@ -1,15 +1,13 @@
 media:
-  input: assets/images
-  output: /assets/images
+  input: assets/images      # 图片在仓库里实际存放的文件夹
+  output: /assets/images    # 文章里引用图片时用的网址路径（带开头的斜杠）
 
 content:
   - name: posts
     label: 今日所念
     type: collection
     path: _posts
-    # 关键修复：原来的 `slug` 不是有效字段，Pages CMS 现在用 `filename`
-    # 控制生成文件名，且模板必须带扩展名，否则文章不会被 Jekyll 识别。
-    filename: "{year}-{month}-{day}-{title}.md"
+    filename: "{year}-{month}-{day}-{fields.title}.md"
     view:
       fields: [title, date]
       primary: title
@@ -27,12 +25,8 @@ content:
         type: date
         required: true
         options:
-          # 关键修复：原来的 `type: datetime` 不是有效类型，
-          # 时间选择器要通过 date 类型的 time 选项开启。
           time: true
           format: "yyyy-MM-dd HH:mm:ss"
       - name: body
         label: 正文内容
         type: rich-text
-        options:
-          format: markdown
