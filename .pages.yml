@@ -9,7 +9,7 @@ content:
     path: _posts
     filename: "{year}-{month}-{day}-{fields.title}.md"
     view:
-      fields: [title, date]
+      fields: [title, category, date]
       primary: title
       sort: [date, title]
       default:
@@ -20,6 +20,12 @@ content:
         label: 文章标题
         type: string
         required: true
+      - name: category
+        label: 分类
+        type: select
+        required: true
+        options:
+          values: ["今日所念", "学习", "阅读＆观影", "旅行"]
       - name: date
         label: 发布时间
         type: date
