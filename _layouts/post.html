@@ -1,14 +1,10 @@
 ---
 layout: default
 ---
-<article>
-  <header class="post-header">
-    <a class="back" href="{{ '/' | relative_url }}">← 回到首页</a>
-    <h1 class="post-title">{{ page.title }}</h1>
-    <p class="post-meta">
-      <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%Y年%m月%d日" }}</time>
-    </p>
-  </header>
+<article class="post">
+  <a class="back" href="{{ '/' | relative_url }}">← 回首页</a>
+  <h1 class="post-title">{{ page.title }}</h1>
+  <div class="post-date">{{ page.date | date: "%Y年%m月%d日" }}</div>
   <div class="post-content">
     {{ content }}
   </div>
