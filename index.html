@@ -1,12 +1,28 @@
---- layout: default ---
-{% for post in site.posts %}
-{{ post.date | date: "%Y年%m月%d日" }}
-{{ post.title }}
-{% if post.excerpt %}
-{{ post.excerpt | strip_html | truncatewords: 46 }}
+---
+layout: default
+---
+<p class="intro">
+  这里是我用来安放日常的小角落。写写碎碎念，记记读过的书、学到的东西、走过的路——
+  不追求什么大道理，只想把每天认真过好，然后回头看看自己走了多远。
+</p>
 
-{% endif %}
-{% else %}
-这里还没有文章，第一篇正在路上。
+<section class="themes">
+  <div class="eyebrow">这里写些什么</div>
+  <div class="theme"><span class="dot"></span><div><h3>碎碎念</h3><p>一些当下的心情和胡思乱想，不修边幅地记下来。</p></div></div>
+  <div class="theme"><span class="dot"></span><div><h3>读书</h3><p>读过的、正在读的，还有那些让我停下来想很久的句子。</p></div></div>
+  <div class="theme"><span class="dot"></span><div><h3>学习</h3><p>在学的东西、踩过的坑，和慢慢积累起来的一点点长进。</p></div></div>
+  <div class="theme"><span class="dot"></span><div><h3>旅行</h3><p>去过的地方，和路上那些让人心里忽然一亮的瞬间。</p></div></div>
+</section>
 
-{% endfor %}
+<section class="recent">
+  <div class="eyebrow">最近写的</div>
+  {% for post in site.posts %}
+    <a class="note" href="{{ post.url | relative_url }}">
+      <span class="date">{{ post.date | date: "%Y.%m.%d" }}</span>
+      <h3>{{ post.title }}</h3>
+      {% if post.excerpt %}<p>{{ post.excerpt | strip_html | truncate: 80 }}</p>{% endif %}
+    </a>
+  {% else %}
+    <p class="empty">这里还没有文章，第一篇正在路上。</p>
+  {% endfor %}
+</section>
